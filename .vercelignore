@@ -1,0 +1,6 @@
+api/
+scripts/
+docs/
+Dockerfile
+**/*.test.mjs
+.env.example

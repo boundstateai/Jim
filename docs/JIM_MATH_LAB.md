@@ -21,19 +21,29 @@ Help Jim become comfortable manipulating algebra, interpreting functions and gra
 
 ## Deployment
 
-The root README documents both supported hosts: Vercel functions and the Node/container server in `scripts/server.mjs`. Both use the same course-aware handlers. Jim's API rejects non-Jim courses. The root `package.json` owns all runtime dependencies.
+Production hosting is split between Vercel (static frontend) and Railway (Node API plus a dedicated persistent Postgres service). `vercel.json` forwards `/api/*` to the Railway service, while `.vercelignore` prevents Vercel from building duplicate API functions. Railway is linked to `BoundState-AI/Jim` on `main` and uses the Dockerfile and `/health` readiness check.
 
-Required for live use: a configured model provider, Postgres, the matching API token configuration if enabled, and the relevant speech provider settings for voice. Use a separate database and credentials for Jim. No credentials, hosting deployment, DNS changes or production-data writes are included in this repository push.
+- Vercel project: `jim-math-lab` (`prj_VpuTuezxud95J9aaaJnfHtc5O5ac`) in the `bound-state` team. Live URL: `https://jim-math-lab.vercel.app`.
+- Requested custom domain: `jim.boundstate.ai`. It is recorded in `vercel.json`, but the connector deployment did not attach it. Add it in Vercel Project Settings → Domains, then copy the project-specific CNAME target into Namecheap with host `jim` and automatic TTL. Domain attachment, DNS propagation and HTTPS verification remain pending.
+- Vercel was deployed from source files through the connector; automatic GitHub deployments are not configured for the frontend. Railway is linked to GitHub.
+- Railway project: `jim-math-lab` (`8044e51c-2aff-4c27-b803-7da5b9ab6719`).
+- Production environment: `7e2f3d74-0e08-46eb-9adc-125f9257d524`.
+- API service: `jim-api` (`e1b38ab5-28f9-413c-9dec-05bf26d8512e`).
+- API origin: `https://jim-api-production.up.railway.app`.
+- Postgres service: `96322891-b003-4deb-8d81-36c5289b8bda`; persistent volume mounted at `/var/lib/postgresql/data`.
+- The API uses a Railway variable reference to `Postgres.DATABASE_URL`; no database credentials are stored in source or sent to the browser.
 
-The old single-student DynamoDB handler, Leo's deployment scripts and chemistry/physics packs are not included. Leo's source repository and deployment are not modified by this push.
+Live tutoring requires `ANTHROPIC_API_KEY` on Railway's `jim-api` service; voice also requires the relevant `OPENAI_API_KEY` and optional ElevenLabs configuration. The connected tools do not reveal existing provider secrets. Populate them in the hosting dashboard, then redeploy. See `.env.example` for names. No existing Leo student records or secrets were copied.
+
+For a local all-in-one server, use `npm run build` and `npm start`. The old single-student DynamoDB handler and Leo's deployment scripts are not included.
 
 ## Verification and limits
 
 - Production frontend build passes. Automated tests: 82 total, 79 pass, 3 database-dependent tests skipped.
 - Chromium checks against the production build confirm root rendering, correct and skipped starting-check answers, earliest-gap recommendation, placement persistence after reload, keyboard graph controls, tangent shown as undefined at 90 degrees, chapter-practice navigation and absence of monetary UI. A 390-pixel mobile viewport has no horizontal overflow; no page JavaScript exceptions were observed. The Node API rejects a non-Jim course with HTTP 400.
-- Browser verification used Playwright with a local Chromium binary after the agent-browser daemon could not start. Database calls correctly failed because no Postgres was configured; this was not a live-service end-to-end test.
+- Initial local browser verification used Playwright with a local Chromium binary after the agent-browser daemon could not start. On September 8, 2026, live Vercel HTML and the proxied Railway progress endpoint returned HTTP 200. An unchanged empty learner snapshot was saved and read back with the same server timestamp; no earned skill progress was added. The live app also rendered in the cloud browser.
 - New tests cover fraction parsing and malformed inputs, diagnostic recommendations, skill catalog integrity, server-selected Jim context, learner-specific transcript labels, model request/rubric wiring and SQL parameters for progress/history/restore/chats/issues. Model and SQL boundary tests use stubs; they do not validate a live provider or database.
-- Three existing database integration tests skip when `DATABASE_URL` is unset. Live AI, speech, photo interpretation and cross-device persistence need verification with a configured preview before release.
+- Three existing database integration tests skip when `DATABASE_URL` is unset. Live AI, speech and photo interpretation still need provider keys and verification. Live database save/read was separately verified; physical cross-device interaction was not tested.
 - Existing three-stage completion uses the engine's historical pass flags. It does not revoke completion after a later failure or prove performance on a delayed independent exam. A future stronger readiness gate should test fresh mixed problems on separate days and distinguish guided from independent attempts.
 - The starting check is local to a device and does not personalize the server tutor automatically. Study and chat history do feed the existing weak-spot reporting.
 

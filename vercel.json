@@ -1,14 +1,17 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "vite",
+  "alias": ["jim.boundstate.ai"],
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "functions": {
-    "api/chat.js": { "maxDuration": 60 },
-    "api/voice.js": { "maxDuration": 60 },
-    "api/progress.js": { "maxDuration": 15 },
-    "api/chats.js": { "maxDuration": 30 }
-  },
   "rewrites": [
-    { "source": "/((?!api/|assets/).*)", "destination": "/index.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "https://jim-api-production.up.railway.app/api/:path*"
+    },
+    {
+      "source": "/((?!api/|assets/).*)",
+      "destination": "/index.html"
+    }
   ]
 }
