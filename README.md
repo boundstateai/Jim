@@ -13,6 +13,8 @@ Jim gets a standalone app with his own curriculum and records:
 
 The starting check suggests where to begin. It is not a placement exam or proof of college readiness. Study progress is separate from Leo's, and there is no debt tracker or invented exam schedule.
 
+The study timer banks active time at $10/hour, capped at $50 per Monday–Sunday week (America/Chicago). It pauses on leaving the app, losing connection, or two minutes without activity. Parent payout review requires a private approval code and records approval only; it never sends money. See `docs/STUDY_REWARDS.md` for rules and operation.
+
 ## Run locally
 
 Use Node 20 or newer. Set the server variables listed in `.env.example` in your shell or hosting environment. Vite reads `.env.local` for frontend variables; the Node server does not automatically load env files. With Node 20.6+, you can run `node --env-file=.env.local scripts/server.mjs` instead of `npm start` to load one explicitly.

@@ -7,9 +7,10 @@ import chat from "../api/chat.js";
 import progress from "../api/progress.js";
 import chats from "../api/chats.js";
 import voice from "../api/voice.js";
+import study from "../api/study.js";
 
 const dist = fileURLToPath(new URL("../dist/", import.meta.url));
-const routes = { "/api/chat": chat, "/api/progress": progress, "/api/chats": chats, "/api/voice": voice };
+const routes = { "/api/chat": chat, "/api/progress": progress, "/api/chats": chats, "/api/voice": voice, "/api/study": study };
 const mime = { ".html":"text/html; charset=utf-8", ".js":"text/javascript; charset=utf-8", ".css":"text/css; charset=utf-8", ".woff":"font/woff", ".woff2":"font/woff2", ".ttf":"font/ttf", ".svg":"image/svg+xml", ".png":"image/png" };
 
 export function createAppServer() {

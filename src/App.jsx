@@ -1,9 +1,12 @@
 import { ChemEngineApp } from "./ChemEngineApp";
 import { jimMathPack } from "./packs/jimMath";
+import { StudyRewards } from "./StudyRewards";
 
 // Jim uses the shared study engine with his own math curriculum.
 export default function App({ pack = jimMathPack }) {
   return (
+    <>
+    <StudyRewards />
     <ChemEngineApp
       chapters={pack.chapters}
       formulas={pack.formulas}
@@ -20,5 +23,6 @@ export default function App({ pack = jimMathPack }) {
       course={pack.id}
       rewardsEnabled={pack.rewardsEnabled ?? true}
     />
+    </>
   );
 }

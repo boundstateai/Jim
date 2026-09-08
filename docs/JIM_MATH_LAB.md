@@ -16,7 +16,7 @@ Help Jim become comfortable manipulating algebra, interpreting functions and gra
 - Interactive slope/intercept graph and unit circle with keyboard-accessible sliders, descriptive text and degree/radian readouts.
 - Coach uses Jim's own persona and a question-first teaching approach. Generation supports expressions, intervals and multiple-root answers. Jim's solve rubric requires a demonstrated method; an unsupported answer is partial. Grading remains model-based, not a symbolic-math proof system.
 - Jim's general review sessions are capped at 12 cards. The suggested session length is 15–20 minutes, not a timer or enforced schedule.
-- Jim has no monetary tracker or invented exam dates. The completion display reports skill checks completed; long-term retention still requires review.
+- Jim has no debt tracker or invented exam dates. His separate active-study allowance pays $10/hour, capped at $50/week, with parent approval; see `STUDY_REWARDS.md`. The completion display reports skill checks completed; long-term retention still requires review.
 - Course `jim-math` maps to database user `jim` for progress, progress history, chats and issue reports. Existing courses keep user `leo`. Local progress, chat session and voice keys are also separate. This is data organization, not separate user authentication.
 
 ## Deployment
@@ -39,8 +39,8 @@ For a local all-in-one server, use `npm run build` and `npm start`. The old sing
 
 ## Verification and limits
 
-- Production frontend build passes. Automated tests: 82 total, 79 pass, 3 database-dependent tests skipped.
-- Chromium checks against the production build confirm root rendering, correct and skipped starting-check answers, earliest-gap recommendation, placement persistence after reload, keyboard graph controls, tangent shown as undefined at 90 degrees, chapter-practice navigation and absence of monetary UI. A 390-pixel mobile viewport has no horizontal overflow; no page JavaScript exceptions were observed. The Node API rejects a non-Jim course with HTTP 400.
+- Production frontend build passes. Automated tests after the timer addition: 91 total, 88 pass, 3 database-dependent tests skipped.
+- Chromium checks against the production build confirm root rendering, correct and skipped starting-check answers, earliest-gap recommendation, placement persistence after reload, keyboard graph controls, tangent shown as undefined at 90 degrees, chapter-practice navigation and absence of the inherited debt UI. A 390-pixel mobile viewport has no horizontal overflow; no page JavaScript exceptions were observed. The Node API rejects a non-Jim course with HTTP 400.
 - Initial local browser verification used Playwright with a local Chromium binary after the agent-browser daemon could not start. On September 8, 2026, live Vercel HTML and the proxied Railway progress endpoint returned HTTP 200. An unchanged empty learner snapshot was saved and read back with the same server timestamp; no earned skill progress was added. The live app also rendered in the cloud browser.
 - New tests cover fraction parsing and malformed inputs, diagnostic recommendations, skill catalog integrity, server-selected Jim context, learner-specific transcript labels, model request/rubric wiring and SQL parameters for progress/history/restore/chats/issues. Model and SQL boundary tests use stubs; they do not validate a live provider or database.
 - Three existing database integration tests skip when `DATABASE_URL` is unset. Live AI, speech and photo interpretation still need provider keys and verification. Live database save/read was separately verified; physical cross-device interaction was not tested.
