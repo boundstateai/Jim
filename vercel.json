@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/chat.js": { "maxDuration": 60 },
+    "api/voice.js": { "maxDuration": 60 },
+    "api/progress.js": { "maxDuration": 15 },
+    "api/chats.js": { "maxDuration": 30 }
+  },
+  "rewrites": [
+    { "source": "/((?!api/|assets/).*)", "destination": "/index.html" }
+  ]
+}
