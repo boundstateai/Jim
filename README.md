@@ -47,4 +47,4 @@ Tests that require Postgres skip without `DATABASE_URL`. The new model/SQL bound
 
 Live frontend: https://jim-math-lab.vercel.app
 
-Requested domain: `jim.boundstate.ai` (Vercel domain attachment and Namecheap DNS still pending). See `docs/JIM_MATH_LAB.md` for deployment IDs, verification and remaining setup.
+Custom domain: `jim.boundstate.ai`, attached to the Vercel project on September 13, 2026. A `jim` CNAME to `cname.vercel-dns.com` was added at Namecheap; DNS propagation and Vercel's HTTPS verification were not yet confirmed at the time of writing. See `docs/JIM_MATH_LAB.md` for deployment IDs, verification and remaining setup.
