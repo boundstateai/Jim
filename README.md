@@ -34,6 +34,19 @@ The starting check, curriculum and visual explorers run without provider keys. L
 - Vercel: the included `vercel.json` builds the frontend and forwards `/api/*` to `https://jim-api-production.up.railway.app`. The `.vercelignore` excludes backend files so Vercel does not create duplicate API functions.
 - Railway: the `jim-api` service builds this repository with the Dockerfile and runs the course-aware handlers. Its `DATABASE_URL` references the dedicated Postgres service. Both services live in the `jim-math-lab` project. Provider keys belong in the Railway `jim-api` Variables panel.
 - Use Jim's own database/provider configuration. Do not attach a review deployment to Leo's production database.
+## Sign in
+
+The app requires a username and password. `JIM_USERNAME` (default `jim`) and
+`JIM_PASSWORD_HASH` hold the credentials; the hash is a scrypt digest produced by
+`node scripts/hash-password.mjs`, so the password itself is never stored or committed.
+A successful sign-in sets an HttpOnly, Secure, SameSite=Lax cookie valid for 30 days,
+and every API route except `/api/login` requires it. Changing the password signs out
+all existing sessions.
+
+If `JIM_PASSWORD_HASH` is unset the API stays open, which is how the app behaved before
+sign-in existed. The static bundle stays public either way: it holds no secrets, and the
+gate protects Jim's records and the tutor, not the page itself.
+
 - If `LEO_API_TOKEN` is set, provide the same value in `VITE_LEO_API_TOKEN` during the frontend build. Those legacy variable names are retained from the engine. In the split deployment, set the server token on Railway and the frontend value on Vercel. A token compiled into browser JavaScript is not user authentication; private deployment access must come from the hosting layer.
 
 ## Checks and implementation notes

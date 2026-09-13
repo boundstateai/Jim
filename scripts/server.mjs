@@ -8,9 +8,13 @@ import progress from "../api/progress.js";
 import chats from "../api/chats.js";
 import voice from "../api/voice.js";
 import study from "../api/study.js";
+import login from "../api/login.js";
+import { isLoggedIn } from "../api/_lib/session.js";
 
 const dist = fileURLToPath(new URL("../dist/", import.meta.url));
-const routes = { "/api/chat": chat, "/api/progress": progress, "/api/chats": chats, "/api/voice": voice, "/api/study": study };
+const routes = { "/api/chat": chat, "/api/progress": progress, "/api/chats": chats, "/api/voice": voice, "/api/study": study, "/api/login": login };
+// /api/login is the way in, so it cannot sit behind the session gate.
+const openRoutes = new Set(["/api/login"]);
 const mime = { ".html":"text/html; charset=utf-8", ".js":"text/javascript; charset=utf-8", ".css":"text/css; charset=utf-8", ".woff":"font/woff", ".woff2":"font/woff2", ".ttf":"font/ttf", ".svg":"image/svg+xml", ".png":"image/png" };
 
 export function createAppServer() {
@@ -33,6 +37,7 @@ export function createAppServer() {
         try {req.body=text ? JSON.parse(text) : {};}
         catch {res.status(400).json({error:"Invalid JSON."});return;}
         req.query = Object.fromEntries(url.searchParams);
+        if (!openRoutes.has(url.pathname) && !isLoggedIn(req)) {res.status(401).json({error:"Please sign in."});return;}
         await handler(req,res);
         return;
       }
