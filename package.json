@@ -8,7 +8,7 @@
     "build": "vite build",
     "start": "node scripts/server.mjs",
     "preview": "vite preview",
-    "test": "node --test src/engine.test.mjs api/voice.test.mjs api/progress.test.mjs api/chat.test.mjs api/chats.test.mjs api/issues.test.mjs src/voiceCapture.test.mjs src/mathReadiness.test.mjs api/math.test.mjs api/study.test.mjs api/login.test.mjs",
+    "test": "node --test src/activity.test.mjs src/engine.test.mjs api/voice.test.mjs api/progress.test.mjs api/chat.test.mjs api/chats.test.mjs api/issues.test.mjs src/voiceCapture.test.mjs src/mathReadiness.test.mjs api/math.test.mjs api/study.test.mjs api/login.test.mjs",
     "api:dev": "PORT=3001 node scripts/server.mjs"
   },
   "dependencies": {
@@ -23,3 +23,4 @@
     "vite": "^5.4.0"
   }
 }
+

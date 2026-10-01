@@ -16,6 +16,7 @@ COPY api ./api
 COPY scripts ./scripts
 # The server-selected course profile imports the shared curriculum.
 COPY src/packs ./src/packs
+COPY src/activity.js ./src/activity.js
 COPY --from=build /app/dist ./dist
 EXPOSE 8080
 CMD ["npm", "start"]
