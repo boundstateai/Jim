@@ -63,13 +63,23 @@ export function createActivityOutbox(storage, prefix, newId, onStorage = () => {
   return {
     append(ranges) {
       compact();
-      const key = immutablePrefix + newId();
       const checkpoint = unionRanges(...memory.values(), ranges);
-      // Also keep the quota-failure fallback compact, and flush it as soon as
-      // storage works again. A unique key protects in-flight acknowledgements.
-      const persisted = write(key, checkpoint);
+      // Apply the same bounds to recovered memory as to compacted disk data.
+      // Splitting long ranges too keeps each record within sync's wire budget.
+      const pieces = checkpoint.flatMap(([start,end]) => {
+        const out=[];
+        for(let at=start;at<end;at+=86400000) out.push([at,Math.min(end,at+86400000)]);
+        return out;
+      });
       memory.clear();
-      if (!persisted) memory.set(key, checkpoint);
+      let allPersisted = true;
+      for(let i=0;i<pieces.length;i+=128) {
+        const key = immutablePrefix + newId();
+        const chunk = pieces.slice(i,i+128);
+        // Fresh keys keep acknowledgements of older snapshots harmless.
+        if (!write(key, chunk)) { memory.set(key, chunk); allPersisted = false; }
+      }
+      if (!allPersisted) onStorage(false);
     },
     snapshot(cutoff) {
       compact();
@@ -103,4 +113,5 @@ export function createActivityOutbox(storage, prefix, newId, onStorage = () => {
     },
   };
 }
+
 

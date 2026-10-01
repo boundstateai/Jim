@@ -167,7 +167,7 @@ test('failed compaction never deletes durable sources and memory retries stay co
  const set=disk.setItem.bind(disk);disk.setItem=()=>{throw Error('quota');};
  for(let i=0;i<200;i++) box.append([[1000+i*10,1005+i*10]]);
  assert.equal(disk.length,64);
- assert.equal(box.snapshot(0).size,65); // 64 durable sources + one memory buffer
+ assert.equal(box.snapshot(0).size,66); // 64 durable sources + two bounded memory buffers
  disk.setItem=set;
  box.append([[4000,4005]]);
  const reopened=createActivityOutbox(disk,'time:',()=>String(++id));
@@ -188,4 +188,45 @@ test('a fragmented compacted backlog drains through bounded API batches',()=>{
  }
  assert.equal(box.snapshot(0).size,0);
  assert.ok(uploads>=3 && uploads<10);
+});
+
+
+test('quota recovery persists bounded checkpoints and drains the entire fragmented backlog',()=>{
+ const disk=fakeStorage(); const set=disk.setItem.bind(disk); let id=0;
+ disk.setItem=()=>{throw Error('quota');};
+ const box=createActivityOutbox(disk,'time:',()=>String(++id));
+ const ranges=Array.from({length:1201},(_,i)=>[i*100,i*100+10]);
+ for(const range of ranges.slice(0,-1)) box.append([range]);
+ const inFlight=box.snapshot(0);
+ disk.setItem=set;
+ box.append([ranges.at(-1)]);
+ box.acknowledge(inFlight,ranges.slice(0,500),0);
+ for(let i=0;i<disk.length;i++) assert.ok(JSON.parse(disk.getItem(disk.key(i))).length<=128);
+ const reopened=createActivityOutbox(disk,'time:',()=>String(++id));
+ assert.deepEqual(unionRanges(...reopened.snapshot(0).values()),ranges);
+ let uploaded=[],attempts=0;
+ while(reopened.snapshot(0).size && attempts++<10) {
+   const entries=reopened.snapshot(0),batch=unionRanges(...entries.values()).slice(0,500);
+   uploaded=unionRanges(uploaded,batch);
+   reopened.acknowledge(entries,batch,0);
+ }
+ assert.equal(reopened.snapshot(0).size,0);
+ assert.deepEqual(uploaded,ranges);
+});
+
+test('partial recovery failures retain every range and report unsaved memory',()=>{
+ const disk=fakeStorage();const set=disk.setItem.bind(disk);let id=0,ok;
+ disk.setItem=()=>{throw Error('quota');};
+ const box=createActivityOutbox(disk,'time:',()=>String(++id),value=>{ok=value;});
+ const ranges=Array.from({length:700},(_,i)=>[i*100,i*100+10]);
+ box.append(ranges);
+ let writes=0;
+ disk.setItem=(key,value)=>{if(++writes===2) throw Error('quota');set(key,value);};
+ box.append([[80000,80010]]);
+ assert.equal(ok,false);
+ assert.deepEqual(unionRanges(...box.snapshot(0).values()),[...ranges,[80000,80010]]);
+ disk.setItem=set;
+ box.append([[90000,90010]]);
+ const reopened=createActivityOutbox(disk,'time:',()=>String(++id));
+ assert.deepEqual(unionRanges(...reopened.snapshot(0).values()),[...ranges,[80000,80010],[90000,90010]]);
 });
