@@ -1,0 +1,14 @@
+.activity-tracker { box-sizing: border-box; max-width: 1120px; margin: 20px auto; padding: 0 20px; color: #e8edf5; }
+.activity-panel { padding: 20px; border: 1px solid #334155; border-radius: 16px; background: #141d2b; }
+.activity-summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.activity-eyebrow { font-size: 12px; letter-spacing: .12em; color: #b9c5d8; }
+.activity-panel h2 { font-size: 30px; margin: 6px 0; }
+.activity-panel h2 span { font-size: 16px; font-weight: 400; color: #b9c5d8; }
+.activity-summary p { font-size: 14px; margin: 8px 0; }
+.activity-badge { font-size: 13px; color: #b9c5d8; padding: 8px 0; }
+.activity-note { color: #b9c5d8; font-size: 12px; line-height: 1.6; }
+.activity-panel summary { cursor: pointer; padding: 10px 0; min-height: 24px; }
+.activity-days { display: grid; gap: 6px 28px; max-height: 260px; overflow: auto; }
+.activity-days > div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid #263345; font-size: 14px; }
+@media (min-width: 960px) { .activity-days { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .activity-tracker { padding: 0 12px; } .activity-panel { padding: 16px; } }
