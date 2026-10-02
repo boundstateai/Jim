@@ -8,6 +8,5 @@ export function ActivityTracker({ course }) {
   const activity = useActivity(course, true, apiHeaders);
   return <div className="activity-tracker">
     <ActivityPanel activity={activity} />
-    <p className="activity-note">Automatic app time is separate from the paid study timer below. Use Start study timer to record allowance time.</p>
   </div>;
 }

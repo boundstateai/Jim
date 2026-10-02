@@ -1,6 +1,5 @@
 import { ChemEngineApp } from "./ChemEngineApp";
 import { jimMathPack } from "./packs/jimMath";
-import { StudyRewards } from "./StudyRewards";
 import { ActivityTracker } from "./ActivityTracker";
 import { LoginGate } from "./Login";
 
@@ -9,7 +8,6 @@ export default function App({ pack = jimMathPack }) {
   return (
     <LoginGate>
     <ActivityTracker course={pack.id} />
-    <StudyRewards />
     <ChemEngineApp
       chapters={pack.chapters}
       formulas={pack.formulas}
