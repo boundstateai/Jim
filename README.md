@@ -15,7 +15,7 @@ This is independent BoundState study support. It is not an official UAH product,
 
 ## Run on Windows
 
-Node 20 or newer is required. From this directory in PowerShell:
+Node 22 or newer is required. From this directory in PowerShell:
 
 ```powershell
 npm ci
@@ -34,7 +34,7 @@ For development, use `npm run api:dev` and `npm run dev` in separate terminals. 
 
 Lessons, the starting check and explorers work without service credentials. Live AI coaching/generation/grading requires `OPENAI_API_KEY`. Saved progress, chats and activity synchronization require `DATABASE_URL`. Missing services display errors; they do not fabricate answers or successful saves. The starting check is stored only in this browser.
 
-The server does not automatically load .env files. Set variables in the shell/host, or with Node 20.6+ use:
+The server does not automatically load .env files. Set variables in the shell/host, or with Node 22+ use:
 
 ```powershell
 node --env-file=.env.local scripts/server.mjs

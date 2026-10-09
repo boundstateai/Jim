@@ -4,7 +4,7 @@ Micah now uses OpenAI Responses with gpt-5.6-terra for tutoring, grading, proble
 
 Settings: OPENAI_API_KEY, optional OPENAI_MODEL, OPENAI_GRADER_MODEL, OPENAI_TAGGER_MODEL, and OPENAI_REASONING_EFFORT (default medium). Requests set store:false; saved learning records remain in the existing application database. Output ceilings include room for reasoning tokens. Failed, refused, or incomplete grading responses do not count as successful grades; interrupted streams do not emit successful completion. Provider error bodies are not sent to the browser.
 
-The active Anthropic SDK and integration module were removed. Existing inactive legacy deployment documentation is historical. No new database or learner identity was created. The working existing OpenAI account key was verified against Terra before use; keys are never committed.
+The active Anthropic SDK and integration module were removed. The linked deployment guides describe the current OpenAI configuration. Only the explicitly identified AWS/Bedrock deployment artifacts are historical. No new database or learner identity was created. The working existing OpenAI account key was verified against Terra before use; keys are never committed.
 
 ## Verification
 
@@ -21,3 +21,5 @@ Railway deployment f66bdeea-a6a7-4f8a-90a2-477becd94901 reached SUCCESS in proje
 Micah also verifies the session after password login, keeps the login screen visible when session checks fail, and returns to login when an API call reports 401. Three additional session tests and two browser checks cover these paths. Production login-cookie recognition and a subsequent Coach response passed.
 
 Reference: https://developers.openai.com/api/docs/models/gpt-5.6-terra
+
+Runtime: Node.js 22 or newer is required by openai@7.31.0 and declared in package.json. Railway Dockerfiles use Node 22; Vercel projects use Node 24.

@@ -33,9 +33,9 @@ Production hosting is split between Vercel (static frontend) and Railway (Node A
 - Postgres service: `96322891-b003-4deb-8d81-36c5289b8bda`; persistent volume mounted at `/var/lib/postgresql/data`.
 - The API uses a Railway variable reference to `Postgres.DATABASE_URL`; no database credentials are stored in source or sent to the browser.
 
-Live tutoring requires `ANTHROPIC_API_KEY` on Railway's `jim-api` service; voice also requires the relevant `OPENAI_API_KEY` and optional ElevenLabs configuration. The connected tools do not reveal existing provider secrets. Populate them in the hosting dashboard, then redeploy. See `.env.example` for names. No existing Leo student records or secrets were copied.
+Live tutoring, grading, problem generation, learning-gap tagging, and voice require `OPENAI_API_KEY` on Railway’s `jim-api` service. Text/image tasks default to `gpt-5.6-terra`; optional overrides are `OPENAI_MODEL`, `OPENAI_GRADER_MODEL`, `OPENAI_TAGGER_MODEL`, and `OPENAI_REASONING_EFFORT`. Production voice uses `LEO_TTS_PROVIDER=openai`. Anthropic credentials are not used by the active app. Keep provider keys in Railway variables, then redeploy the API. See `.env.example` and [OpenAI migration](OPENAI_MIGRATION.md). Existing student records remain in their original databases.
 
-For a local all-in-one server, use `npm run build` and `npm start`. The old single-student DynamoDB handler and Leo's deployment scripts are not included.
+Use Node.js 22 or newer; the Dockerfile already uses Node 22. For a local all-in-one server, use `npm run build` and `npm start`. The old single-student DynamoDB handler and Leo's deployment scripts are not included.
 
 ## Sign in
 
