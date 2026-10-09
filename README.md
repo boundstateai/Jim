@@ -17,7 +17,7 @@ The study timer banks active time at $10/hour, capped at $50 per Monday–Sunday
 
 ## Run locally
 
-Use Node 20 or newer. Set the server variables listed in `.env.example` in your shell or hosting environment. Vite reads `.env.local` for frontend variables; the Node server does not automatically load env files. With Node 20.6+, you can run `node --env-file=.env.local scripts/server.mjs` instead of `npm start` to load one explicitly.
+Use Node 22 or newer. Set the server variables listed in `.env.example` in your shell or hosting environment. Vite reads `.env.local` for frontend variables; the Node server does not automatically load env files. With Node 22+, you can run `node --env-file=.env.local scripts/server.mjs` instead of `npm start` to load one explicitly.
 
 ```sh
 npm ci
