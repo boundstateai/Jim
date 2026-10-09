@@ -11,7 +11,7 @@ import handler from "./chat.js";
 
 test("Student context is server-selected and cannot inherit Leo's exams or debt", () => {
   const context = courseContext({ course: "uah-ma171", tutor: { studentName: "Leo" }, exams: [{ date: "2099-01-01" }], debt: 1800 });
-  assert.equal(context.tutor.studentName, "Student");
+  assert.equal(context.tutor.studentName, "Micah");
   assert.deepEqual(context.exams, []);
   assert.equal(context.debt, 0);
   assert.equal(courseUserId("physics"), "leo");

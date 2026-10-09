@@ -1,4 +1,4 @@
-# Calculus Lab — UAH MA 171
+# Micah’s Calculus Lab — UAH MA 171
 
 A standalone version of Jim's Math Lab for **MA 171: Calculus I / Calculus A** at the University of Alabama in Huntsville. Based on [boundstateai/Jim](https://github.com/boundstateai/Jim) commit `5ec269b4ee511bd9f8f1954a7f202cd77cc7772a`, developed on branch `codex/uah-ma171`.
 
@@ -40,15 +40,15 @@ The server does not automatically load .env files. Set variables in the shell/ho
 node --env-file=.env.local scripts/server.mjs
 ```
 
-See [.env.example](.env.example). No credentials, database connection or cloud project were copied from Jim or Leo.
+See [.env.example](.env.example). Micah has a dedicated Railway project and database. With owner authorization, the existing Anthropic and OpenAI provider keys are reused; no Jim progress or database connection is shared.
 
 ## Isolation and hosting
 
-Use a dedicated deployment and confirmed database configuration. Do not reconnect this version to Jim's production API. The inherited Jim domain alias and Railway proxy have been removed. The Dockerfile serves frontend and API together; Vercel can use the included local API handlers after its own environment is configured.
+Production uses Vercel project `micah-calculus` for the frontend at `micah.boundstate.ai`. `/api/*` is forwarded to `https://micah-api-production.up.railway.app/api/*`. Railway project `micah-calculus`, production environment, runs the Docker API service and its own Postgres. Vercel excludes local API handlers from deployment. See [deployment record](docs/MICAH_DEPLOYMENT.md) for IDs and DNS.
 
 This remains a single-learner app. Set `CALCULUS_USERNAME` (default `student`) and `CALCULUS_PASSWORD_HASH`; generate the scrypt hash using `node scripts/hash-password.mjs`. Unconfigured authentication leaves the API open for local development, as in the source app. Configure authentication before publishing. It uses the `calculus_session` cookie, separate from Jim's cookie. Session enforcement runs inside API handlers as well as the Node server.
 
-The shared-engine `LEO_API_TOKEN`/`VITE_LEO_API_TOKEN` names remain for compatibility. A browser-bundled token is not user authentication. Optional voice provider configuration is inherited. Live provider behavior and database integration have not been validated without this version's credentials.
+The shared-engine `LEO_API_TOKEN`/`VITE_LEO_API_TOKEN` names remain for compatibility. A browser-bundled token is not user authentication. OpenAI voice configuration is inherited. Production sign-in, signed session cookies, database read/save/read, and an Anthropic calculus response were verified through the Vercel-to-Railway route on 2026-10-09. Voice recording and transcription were not live-tested.
 
 ## Evidence and limits
 

@@ -492,14 +492,14 @@ const rows = [
 export const uahCalculusPack = {
   id: "uah-ma171", storageKey: "uah-ma171-v1", legacyKey: null,
   perFormula: 0, debtStart: 0, rewardsEnabled: false,
-  brand: {title: "Calculus Lab", logo: "∫", subtitle: "UAH MA 171 · Calculus I / Calculus A"},
+  brand: {title: "Micah’s Calculus Lab", logo: "∫", subtitle: "UAH MA 171 · Calculus I / Calculus A"},
   chapters: units.map(([name,group],i)=>({n:i+1,name,group,color:["#4F8CFF","#34D399","#A78BFA","#F5A623"][Math.floor(i/3)]})),
   groups: ["Foundations","Limits","Derivatives","Applications","Integrals"].map(key=>({key,label:key.toUpperCase()})),
   formulas: rows.map(([ch,key,name,formula,meaning,example,mathTip])=>({id:`ma171-${key}`,ch,name,formula,meaning,example,mathTip})),
   sources: courseSources,
   exams: [],
   tutor: {
-    persona: "Coach", studentName: "Student", subject: "single-variable calculus",
+    persona: "Coach", studentName: "Micah", subject: "single-variable calculus",
     course: "UAH MA 171 — Calculus I / Calculus A",
     textbook: "Instructor textbook unknown. OpenStax Calculus Volume 1 is optional further reading, not an assigned text.",
     mathNote: "Diagnose algebra and trig prerequisites as needed. Explain limits, derivatives and integrals conceptually, graphically and symbolically. Use radians. Show intermediate steps, hypotheses, domains, units and checks.",

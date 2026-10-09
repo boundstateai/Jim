@@ -5,7 +5,7 @@ import { apiHeaders } from "./apiAuth";
 // gives the learner somewhere to sign in and keeps the UI from firing doomed requests.
 export function LoginGate({ children }) {
   const [status, setStatus] = useState("checking");
-  const [username, setUsername] = useState("student");
+  const [username, setUsername] = useState("micah");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -56,7 +56,7 @@ export function LoginGate({ children }) {
   return (
     <div className="login-screen">
       <form className="login-card" onSubmit={submit}>
-        <h1>Calculus Lab</h1>
+        <h1>Micah’s Calculus Lab</h1>
         <p className="login-sub">Sign in to pick up where you left off.</p>
 
         <label htmlFor="login-user">Username</label>

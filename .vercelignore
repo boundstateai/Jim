@@ -2,6 +2,7 @@ node_modules/
 dist/
 docs/
 scripts/
+api/
 **/*.test.mjs
-.env.example
+.env*
 Dockerfile

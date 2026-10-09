@@ -3,7 +3,7 @@ import { uahCalculusPack } from "../../src/packs/uahCalculus.js";
 // Storage isolation, not multi-user authentication. Legacy mappings remain for
 // engine tests; public routes accept only this standalone MA 171 course.
 export const courseUserId = course => course === "uah-ma171" ? "uah-ma171-student" : course === "jim-math" ? "jim" : "leo";
-export const courseStudentName = course => course === "uah-ma171" ? "Student" : course === "jim-math" ? "Jim" : "Leo";
+export const courseStudentName = course => course === "uah-ma171" ? "Micah" : course === "jim-math" ? "Jim" : "Leo";
 export function courseContext(body) {
   if (body.course === "uah-ma171") return { ...body, tutor: uahCalculusPack.tutor, exams: [], debt: 0 };
   return body;
@@ -14,7 +14,7 @@ export function learningSubject(body) {
 export function calculusSystemPrompt(body) {
   const weak = Array.isArray(body.weaknesses) ? body.weaknesses.map(x=>x.name).join(", ") : "";
   return `You are Coach, a patient tutor for UAH MA 171, Calculus I (formerly Calculus A).
-Address the learner as "you"; their name, age, major and current ability are unknown.
+The learner is Micah. Their age, major and current ability are unknown.
 This is an independent BoundState study aid, not an official UAH course or a certification.
 ${uahCalculusPack.tutor.mathNote}
 ${uahCalculusPack.tutor.scheduleNote}

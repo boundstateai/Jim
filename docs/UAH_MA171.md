@@ -34,9 +34,9 @@ The graph models are bounded demonstrations of x², not a symbolic calculator. S
 - 64 Riemann rectangles give 2.72949 versus exact 8/3, error 0.06283.
 - Chapter 5 opens all four differentiation-rule cards.
 - At 390px viewport width, the home page has no horizontal overflow.
-- Provider and database calls are not live-validated. The local preview reports unavailable synchronization; it does not claim records were saved remotely.
-- No new cloud resources were created and no existing deployment was changed.
+- Production sign-in, secure session cookies, database read/save/read, and one live calculus tutor response passed through Vercel and Railway on 2026-10-09. Voice was not live-tested.
+- Dedicated Micah projects were provisioned with owner approval. Jim’s production services were not modified. See [deployment record](MICAH_DEPLOYMENT.md).
 
 ## Follow-up configuration
 
-Supply the actual instructor syllabus to align order, textbook notation, optional topics and exam coverage. Confirm the intended learner name and existing hosting/database setup before provisioning. Set this version's credentials and test live coaching and persistence before release.
+Supply the actual instructor syllabus to align order, textbook notation, optional topics and exam coverage. Micah’s production login and database are configured; the owner is handling the custom domain DNS.
