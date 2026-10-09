@@ -2,19 +2,15 @@ import { courseContext, learningSubject, jimSystemPrompt, courseStudentName } fr
 // Vercel Function: Dr. Chem tutor (streaming SSE) + grade/generate actions.
 // Route: /api/chat  (POST)
 //
-// Ported from the Bedrock handler to the Anthropic API. Key change: Opus 4.8
-// rejects temperature/top_p, so none are sent — problem variety is steered via
-// the prompt instead.
+// Uses OpenAI Responses for streaming and structured JSON results.
 
 import {
-  client,
-  CHAT_MODEL,
-  extractText,
+  streamTutor,
   runJsonPrompt,
   getErrorReply,
-} from "./_lib/anthropic.js";
+} from "./_lib/openai.js";
 import { requireApiAuth } from "./_lib/auth.js";
-import { toAnthropicMessages, struggleAddendum, ChatRequestError } from "./_lib/chatMessages.js";
+import { toOpenAIMessages, struggleAddendum, ChatRequestError } from "./_lib/chatMessages.js";
 import { chatDigest, DIGEST_DAYS } from "./_lib/chatLog.js";
 import { issueSummary, formatIssueSummary, SUMMARY_DAYS } from "./_lib/issues.js";
 
@@ -295,7 +291,7 @@ Rules:
 async function streamChat(res, body) {
   let messages;
   try {
-    messages = toAnthropicMessages(body.messages);
+    messages = toOpenAIMessages(body.messages);
   } catch (error) {
     const status = error instanceof ChatRequestError ? error.status : 400;
     res.status(status).json({ error: error.message || "Bad chat request." });
@@ -335,17 +331,8 @@ async function streamChat(res, body) {
   };
 
   try {
-    const stream = client.messages.stream({
-      model: CHAT_MODEL,
-      max_tokens: 1024,
-      system,
-      messages,
-    });
-
-    for await (const event of stream) {
-      if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
-        sse("token", { text: event.delta.text });
-      }
+    for await (const text of streamTutor(messages, { system })) {
+      sse("token", { text });
     }
 
     sse("done", { ok: true });
