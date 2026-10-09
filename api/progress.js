@@ -34,8 +34,8 @@ export default async function handler(req, res) {
   if (!requireApiAuth(req, res)) return;
 
   const body = readBody(req);
-  const course = (req.query?.course || body.course || "jim-math").toString();
-  if (course !== "jim-math") {res.status(400).json({error:"Unsupported course."});return;}
+  const course = (req.query?.course || body.course || "uah-ma171").toString();
+  if (course !== "uah-ma171") {res.status(400).json({error:"Unsupported course."});return;}
 
   try {
     if (req.method === "GET") {

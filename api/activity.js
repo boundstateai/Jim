@@ -31,8 +31,8 @@ export default async function handler(req,res) {
   try { body=typeof req.body==='string' ? JSON.parse(req.body) : req.body||{}; }
   catch { return res.status(400).json({error:'Invalid JSON.'}); }
   if (!body || typeof body !== 'object' || Array.isArray(body)) return res.status(400).json({error:'Invalid body.'});
-  const course=req.query?.course || body.course || 'jim-math';
-  if (!['jim-math'].includes(course)) return res.status(400).json({error:'Invalid course.'});
+  const course=req.query?.course || body.course || 'uah-ma171';
+  if (!['uah-ma171'].includes(course)) return res.status(400).json({error:'Invalid course.'});
   if (req.method==='POST' && !validateRanges(body.ranges)) return res.status(400).json({error:'Invalid activity ranges.'});
   try {
     await ensureActivity();
@@ -57,4 +57,3 @@ export default async function handler(req,res) {
     return res.status(500).json({error:'Could not sync study time.'});
   }
 }
-

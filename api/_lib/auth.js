@@ -1,3 +1,4 @@
+import { isLoggedIn } from "./session.js";
 import { timingSafeEqual } from "node:crypto";
 
 const TOKEN_HEADER = "x-leo-api-token";
@@ -41,7 +42,7 @@ export function rejectUnauthorized(res) {
 }
 
 export function requireApiAuth(req, res) {
-  if (isApiAuthorized(req.headers)) return true;
+  if (isLoggedIn(req) && isApiAuthorized(req.headers)) return true;
   rejectUnauthorized(res);
   return false;
 }

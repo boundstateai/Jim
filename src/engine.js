@@ -1,8 +1,8 @@
 const DAY_MS = 864e5;
 
-export const LOCAL_KEY = "jim-math-v1";
+export const LOCAL_KEY = "uah-ma171-v1";
 export const LEGACY_KEY = null;
-export const USER_ID = "jim";
+export const USER_ID = "uah-ma171-student";
 
 export const MODE_META = {
   write: {

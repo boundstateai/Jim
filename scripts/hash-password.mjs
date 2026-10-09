@@ -1,10 +1,10 @@
-// Generates a JIM_PASSWORD_HASH value. The password is read from stdin so it
+// Generates a CALCULUS_PASSWORD_HASH value. The password is read from stdin so it
 // never lands in shell history, a file, or process arguments.
 //
 //   node scripts/hash-password.mjs
 //   (type the password, then press Enter)
 //
-// Put the printed value in JIM_PASSWORD_HASH on the hosting provider.
+// Put the printed value in CALCULUS_PASSWORD_HASH on the hosting provider.
 // Changing it signs out every existing session.
 import { hashPassword } from "../api/_lib/session.js";
 

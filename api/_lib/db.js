@@ -24,7 +24,7 @@ export const pool = new Pool({
   max: 3,
 });
 
-export const USER_ID = "jim";
+export const USER_ID = "uah-ma171-student";
 
 // How many superseded copies to keep per course. Single user, a few writes a
 // day: 500 is months of undo at negligible cost.
@@ -90,7 +90,7 @@ export function hasProgressData(progress) {
   return cards > 0 || history > 0;
 }
 
-export async function getProgress(course = "jim-math") {
+export async function getProgress(course = "uah-ma171") {
   await ensureSchema();
   const { rows } = await pool.query(
     "SELECT data FROM progress WHERE user_id = $1 AND course = $2",
@@ -134,7 +134,7 @@ async function upsertRow(client, course, data, updatedAt) {
  * snapshot has no earned work but the stored one does and `reset` is not set.
  * The stored progress is returned in that case so the client can adopt it.
  */
-export async function putProgress(course = "jim-math", progress, { reset = false } = {}) {
+export async function putProgress(course = "uah-ma171", progress, { reset = false } = {}) {
   await ensureSchema();
   const updatedAt = Number(progress?.updatedAt) || Date.now();
   const data = { ...progress, userId: courseUserId(course), course, updatedAt };
@@ -171,7 +171,7 @@ export async function putProgress(course = "jim-math", progress, { reset = false
 }
 
 /** Superseded copies, newest first, summarized (no blobs). */
-export async function listProgressHistory(course = "jim-math", limit = 50) {
+export async function listProgressHistory(course = "uah-ma171", limit = 50) {
   await ensureSchema();
   const { rows } = await pool.query(
     `SELECT id, updated_at, replaced_at, reason,
@@ -202,7 +202,7 @@ export async function listProgressHistory(course = "jim-math", limit = 50) {
 }
 
 /** One superseded copy in full, or null. */
-export async function getProgressHistoryEntry(course = "jim-math", id) {
+export async function getProgressHistoryEntry(course = "uah-ma171", id) {
   await ensureSchema();
   const { rows } = await pool.query(
     `SELECT id, data, updated_at, replaced_at, reason
@@ -226,7 +226,7 @@ export async function getProgressHistoryEntry(course = "jim-math", id) {
  * snapshot gets a fresh updatedAt so stale blank copies on devices lose the
  * merge.
  */
-export async function restoreProgress(course = "jim-math", id) {
+export async function restoreProgress(course = "uah-ma171", id) {
   await ensureSchema();
   const entry = await getProgressHistoryEntry(course, id);
   if (!entry) return { ok: false, rejected: "not-found" };

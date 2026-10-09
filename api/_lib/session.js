@@ -1,6 +1,6 @@
-// Single-student login for Jim's app.
+// Single-student login for Calculus Lab.
 //
-// The password is never stored: JIM_PASSWORD_HASH holds a scrypt digest as
+// The password is never stored: CALCULUS_PASSWORD_HASH holds a scrypt digest as
 // "scrypt$<saltHex>$<hashHex>". A successful login returns an HMAC-signed,
 // HttpOnly session cookie; nothing sensitive reaches browser JavaScript.
 //
@@ -10,13 +10,13 @@
 // multi-user identity system.
 import { createHash, createHmac, randomBytes, scryptSync, timingSafeEqual } from "node:crypto";
 
-export const COOKIE_NAME = "jim_session";
+export const COOKIE_NAME = "calculus_session";
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 const MAX_PASSWORD_LENGTH = 256;
 const KEY_LENGTH = 32;
 
 export function expectedUsername() {
-  return `${process.env.JIM_USERNAME || "jim"}`.trim().toLowerCase();
+  return `${process.env.CALCULUS_USERNAME || "student"}`.trim().toLowerCase();
 }
 
 // Signing key falls back to a digest of the password hash so that changing the
@@ -24,12 +24,12 @@ export function expectedUsername() {
 function signingKey() {
   const explicit = process.env.SESSION_SECRET || "";
   if (explicit) return Buffer.from(explicit, "utf8");
-  const stored = process.env.JIM_PASSWORD_HASH || "";
-  return stored ? createHash("sha256").update(`jim-session:${stored}`).digest() : null;
+  const stored = process.env.CALCULUS_PASSWORD_HASH || "";
+  return stored ? createHash("sha256").update(`calculus-session:${stored}`).digest() : null;
 }
 
 export function loginConfigured() {
-  return Boolean(process.env.JIM_PASSWORD_HASH) && Boolean(signingKey());
+  return Boolean(process.env.CALCULUS_PASSWORD_HASH) && Boolean(signingKey());
 }
 
 export function hashPassword(password, salt = randomBytes(16)) {
@@ -38,7 +38,7 @@ export function hashPassword(password, salt = randomBytes(16)) {
 }
 
 export function verifyPassword(username, password) {
-  const stored = process.env.JIM_PASSWORD_HASH || "";
+  const stored = process.env.CALCULUS_PASSWORD_HASH || "";
   if (typeof username !== "string" || typeof password !== "string") return false;
   if (!password || password.length > MAX_PASSWORD_LENGTH) return false;
   if (username.trim().toLowerCase() !== expectedUsername()) return false;

@@ -779,7 +779,7 @@ export function ChemEngineApp({
   const remoteLoadedRef = useRef(false);
 
   const commitProgress = useCallback(nextProgress => {
-    const trimmed = trimProgress({ ...nextProgress, userId: course === "jim-math" ? "jim" : "leo" });
+    const trimmed = trimProgress({ ...nextProgress, userId: course === "uah-ma171" ? "uah-ma171-student" : "leo" });
     progressRef.current = trimmed;
     setProgress(trimmed);
   }, [course]);
@@ -1026,7 +1026,7 @@ export function ChemEngineApp({
     const ranked = buildQueue(formulas, chapter, progress.cardData, progress.gradeHistory, online, queueOptions);
     const due = ranked.filter(item => item.due);
     const selected = due.length ? due : ranked.slice(0, 12);
-    return course === "jim-math" ? selected.slice(0, 12) : selected;
+    return course === "uah-ma171" ? selected.slice(0, 12) : selected;
   };
 
   const launchSession = useCallback(items => {
@@ -1207,7 +1207,7 @@ export function ChemEngineApp({
       if (currentMode === "write") {
         const local = localRecallAssessment(study.answer, currentFormula.formula);
 
-        if (course !== "jim-math" && !local.needsAi) {
+        if (course !== "uah-ma171" && !local.needsAi) {
           finalizeStudy(local.verdict, local.explanation);
           return;
         }
@@ -1882,7 +1882,7 @@ export function ChemEngineApp({
         </div>
 
         <Debt />
-        {course === "jim-math" && <MathLab chapters={chapters} formulas={formulas} cardData={progress.cardData} onStudy={startChapterStudy} onAsk={text => { setView("chat"); setChatInput(text); }} />}
+        {course === "uah-ma171" && <MathLab chapters={chapters} formulas={formulas} cardData={progress.cardData} onStudy={startChapterStudy} onAsk={text => { setView("chat"); setChatInput(text); }} />}
         <Exams />
 
         {readiness && readiness.days <= 28 && (
@@ -1950,7 +1950,7 @@ export function ChemEngineApp({
             style={{ ...S.primaryButton, ...S.primaryButtonHero }}
             onClick={startStudyAll}
           >
-            Prove It ({course === "jim-math" ? Math.min(12, dueCount || 12) : dueCount || 12})
+            Prove It ({course === "uah-ma171" ? Math.min(12, dueCount || 12) : dueCount || 12})
           </button>
           <button
             style={{ ...S.secondaryButtonHero }}

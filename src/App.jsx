@@ -1,10 +1,10 @@
 import { ChemEngineApp } from "./ChemEngineApp";
-import { jimMathPack } from "./packs/jimMath";
+import { uahCalculusPack } from "./packs/uahCalculus";
 import { ActivityTracker } from "./ActivityTracker";
 import { LoginGate } from "./Login";
 
-// Jim uses the shared study engine with his own math curriculum.
-export default function App({ pack = jimMathPack }) {
+// MA 171 uses the shared study engine with an isolated calculus curriculum.
+export default function App({ pack = uahCalculusPack }) {
   return (
     <LoginGate>
     <ActivityTracker course={pack.id} />
@@ -27,4 +27,3 @@ export default function App({ pack = jimMathPack }) {
     </LoginGate>
   );
 }
-

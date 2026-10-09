@@ -1,14 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "alias": ["jim.boundstate.ai"],
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://jim-api-production.up.railway.app/api/:path*"
-    },
     {
       "source": "/((?!api/|assets/).*)",
       "destination": "/index.html"

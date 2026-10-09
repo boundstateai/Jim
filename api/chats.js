@@ -32,8 +32,8 @@ export function lastTurn(messages) {
 export default async function handler(req, res) {
   if (!requireApiAuth(req, res)) return;
   const body = readBody(req);
-  const course = `${req.query?.course || body.course || "jim-math"}`.slice(0, 40);
-  if (course !== "jim-math") {res.status(400).json({error:"Unsupported course."});return;}
+  const course = `${req.query?.course || body.course || "uah-ma171"}`.slice(0, 40);
+  if (course !== "uah-ma171") {res.status(400).json({error:"Unsupported course."});return;}
 
   try {
     if (req.method === "GET") {

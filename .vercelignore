@@ -1,6 +1,7 @@
-api/
-scripts/
+node_modules/
+dist/
 docs/
-Dockerfile
+scripts/
 **/*.test.mjs
 .env.example
+Dockerfile

@@ -61,7 +61,6 @@ export function createAppServer() {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const port=Number(process.env.PORT)||8080;
-  createAppServer().listen(port,"0.0.0.0",()=>console.log(`Jim's Math Lab listening on :${port}`));
+  const port=Number(process.env.PORT)||(process.argv.includes("--dev") ? 3001 : 8080);
+  createAppServer().listen(port,"0.0.0.0",()=>console.log(`Calculus Lab listening on :${port}`));
 }
-

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  COOKIE_NAME,
   clearedCookie,
   createSessionToken,
   hashPassword,
@@ -16,14 +17,14 @@ import handler from "./login.js";
 const PASSWORD = "correct horse battery staple!";
 
 function configure({ password = PASSWORD, username = "jim" } = {}) {
-  process.env.JIM_PASSWORD_HASH = hashPassword(password);
-  process.env.JIM_USERNAME = username;
+  process.env.CALCULUS_PASSWORD_HASH = hashPassword(password);
+  process.env.CALCULUS_USERNAME = username;
   delete process.env.SESSION_SECRET;
 }
 
 function clear() {
-  delete process.env.JIM_PASSWORD_HASH;
-  delete process.env.JIM_USERNAME;
+  delete process.env.CALCULUS_PASSWORD_HASH;
+  delete process.env.CALCULUS_USERNAME;
   delete process.env.SESSION_SECRET;
 }
 
@@ -96,8 +97,8 @@ test("the cookie is HttpOnly, Secure and SameSite", () => {
 });
 
 test("parseCookies reads one value out of a crowded jar", () => {
-  const jar = parseCookies("a=1; jim_session=abc.def; b=2");
-  assert.equal(jar.jim_session, "abc.def");
+  const jar = parseCookies("a=1; calculus_session=abc.def; b=2");
+  assert.equal(jar.calculus_session, "abc.def");
 });
 
 test("isLoggedIn gates a configured deployment and opens an unconfigured one", () => {
@@ -106,7 +107,7 @@ test("isLoggedIn gates a configured deployment and opens an unconfigured one", (
 
   configure();
   assert.equal(isLoggedIn({ headers: {} }), false, "no cookie is rejected");
-  assert.equal(isLoggedIn({ headers: { cookie: "jim_session=nonsense" } }), false);
+  assert.equal(isLoggedIn({ headers: { cookie: "calculus_session=nonsense" } }), false);
   assert.equal(
     isLoggedIn({ headers: { cookie: sessionCookie(createSessionToken()).split(";")[0] } }),
     true
@@ -120,7 +121,7 @@ test("POST with the right credentials sets a session cookie", async () => {
   await handler({ method: "POST", headers: {}, body: { username: "jim", password: PASSWORD } }, res);
   assert.equal(res.statusCode, 200);
   assert.equal(res.body.authenticated, true);
-  assert.match(res.headers["set-cookie"], /^jim_session=.+HttpOnly/);
+  assert.match(res.headers["set-cookie"], /^calculus_session=.+HttpOnly/);
   clear();
 });
 
@@ -170,4 +171,18 @@ test("login refuses politely when nothing is configured", async () => {
   await handler({ method: "POST", headers: {}, body: { username: "jim", password: PASSWORD } }, res);
   assert.equal(res.statusCode, 503);
   clear();
+});
+
+
+test("direct API handlers require the calculus session and reject Jim cookies", async()=>{
+  const {requireApiAuth}=await import('./_lib/auth.js');
+  configure();
+  try {
+    const token=createSessionToken();
+    const missing=fakeRes();
+    assert.equal(requireApiAuth({headers:{}},missing),false);
+    assert.equal(missing.statusCode,401);
+    assert.equal(requireApiAuth({headers:{cookie:'jim_session='+token}},fakeRes()),false);
+    assert.equal(requireApiAuth({headers:{cookie:COOKIE_NAME+'='+token}},fakeRes()),true);
+  } finally {clear();}
 });

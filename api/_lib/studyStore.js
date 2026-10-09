@@ -11,12 +11,12 @@ export async function studyRequest(body) {
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
-    await client.query("INSERT INTO study_rewards (user_id, data) VALUES ($1, $2) ON CONFLICT DO NOTHING", ["jim", emptyRewards()]);
-    const { rows } = await client.query("SELECT data FROM study_rewards WHERE user_id = $1 FOR UPDATE", ["jim"]);
+    await client.query("INSERT INTO study_rewards (user_id, data) VALUES ($1, $2) ON CONFLICT DO NOTHING", ["uah-ma171-student", emptyRewards()]);
+    const { rows } = await client.query("SELECT data FROM study_rewards WHERE user_id = $1 FOR UPDATE", ["uah-ma171-student"]);
     const state = rows[0].data;
     const now = Date.now();
     const result = transition(state, body, now);
-    await client.query("UPDATE study_rewards SET data = $2 WHERE user_id = $1", ["jim", state]);
+    await client.query("UPDATE study_rewards SET data = $2 WHERE user_id = $1", ["uah-ma171-student", state]);
     await client.query("COMMIT");
     return { ...result, summary: summary(state, now) };
   } catch (error) {

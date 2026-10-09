@@ -42,14 +42,14 @@ test('activity endpoint saves unioned ranges, retries safely and leaves progress
  const rows=new Map(),queries=[];
  const query=async(sql,args=[])=>{
   queries.push(sql);
-  if(sql.startsWith('INSERT INTO study_activity')) assert.deepEqual(args.slice(0,2),['jim','jim-math']);
+  if(sql.startsWith('INSERT INTO study_activity')) assert.deepEqual(args.slice(0,2),['uah-ma171-student','uah-ma171']);
   if(sql.startsWith('SELECT ranges FROM study_activity WHERE') && sql.includes('FOR UPDATE')) return {rows:rows.has(args[2]) ? [{ranges:rows.get(args[2])}] : []};
   if(sql.startsWith('INSERT INTO study_activity')) rows.set(args[2],JSON.parse(args[3]));
   if(sql.startsWith('SELECT ranges FROM study_activity WHERE') && !sql.includes('FOR UPDATE')) return {rows:[...rows.values()].map(ranges=>({ranges}))};
   return {rows:[]};
  };
  pool.query=query;pool.connect=async()=>({query,release(){}});
- const call=async(method,body,course='jim-math')=>{
+ const call=async(method,body,course='uah-ma171')=>{
   const res={statusCode:200,setHeader(){},status(n){this.statusCode=n;return this;},json(v){this.body=v;return this;}};
   const token=process.env.LEO_API_TOKEN||process.env.API_TOKEN||'';
   await handler({method,body,query:{course},headers:{'x-leo-api-token':token}},res);

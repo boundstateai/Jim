@@ -1,4 +1,4 @@
-import { courseContext, learningSubject, jimSystemPrompt, courseStudentName } from "./_lib/course.js";
+import { courseContext, learningSubject, calculusSystemPrompt, courseStudentName } from "./_lib/course.js";
 // Vercel Function: Dr. Chem tutor (streaming SSE) + grade/generate actions.
 // Route: /api/chat  (POST)
 //
@@ -23,7 +23,7 @@ import { issueSummary, formatIssueSummary, SUMMARY_DAYS } from "./_lib/issues.js
 // generically so the same backend serves chem AND physics. Falls back to Dr. Chem
 // defaults if an older client sends no tutor.
 function buildSystemPrompt(body) {
-  if (body.course === "jim-math") return jimSystemPrompt(body);
+  if (body.course === "uah-ma171") return calculusSystemPrompt(body);
   const tutor = body.tutor || {};
   const persona = tutor.persona || "Dr. Chem";
   const subject = tutor.subject || "chemistry";
@@ -118,7 +118,7 @@ ${body.studentAnswer}
 
 Rules:
 - Accept spacing differences, plain-text Greek names, and simple keyboard versions of subscripts/superscripts. Preserve mathematically distinct variables and operations.
-- For algebra and trig, accept a correct verbal rule or equivalent expression with its required conditions. Check domains, inequalities, exponents and restrictions; do not award correctness just for matching words.
+- For calculus, accept a correct verbal rule or equivalent expression with its required conditions. Check domains, theorem hypotheses, limits, derivative factors and integration constants; do not award correctness just for matching words.
 - Accept mathematically equivalent rearrangements if they clearly represent the same formula.
 - For multi-line formulas, grade PARTIAL if the student recalled only part of the full answer.
 - Reply with JSON only using this schema:
@@ -151,7 +151,7 @@ Rules:
 - The problem must require this formula.
 - Use realistic numbers and include all needed data.
 - Specify a clear answer format, all domain restrictions, and degrees or radians for angles. The answer may be a number, expression, interval or full solution set as appropriate.
-- For algebra and trig, test the skill directly; do not force a chemistry scenario. Independently check the answer by substitution or another valid method.
+- For calculus, test the skill directly. State theorem hypotheses, domains, radians and units. Check derivatives independently and integrals by differentiation; do not force a chemistry scenario.
 - The solution must show enough steps for grading.
 - Reply with JSON only using this schema:
 {"problem":"...","solution":"...","finalAnswer":"...","correctAnswer":"..."}
@@ -227,7 +227,8 @@ ${body.studentAnswer || ""}
 
 Rules:
 - Verify the supplied solution yourself before grading. Accept mathematically equivalent forms on the same domain and appropriate units.
-${body.course === "jim-math" ? "- Require a valid method or explanation as well as the correct answer. An unsupported final answer is PARTIAL: ask for the reasoning. Require all roots and restrictions when relevant; never accept an extraneous root. Do not infer a correct method just because a number is close." : "- Focus on the final answer and units."}
+${body.course === "uah-ma171" ? "- Require a valid method or explanation as well as the correct answer. An unsupported final answer is PARTIAL: ask for the reasoning. Require all roots and restrictions when relevant; never accept an extraneous root. Do not infer a correct method just because a number is close." : "- Focus on the final answer and units."}
+- For calculus, check chain-rule factors, theorem hypotheses, endpoints, +C for indefinite integrals, substitution bounds and signed area versus total area.
 - Accept reasonable rounding.
 - Grade PARTIAL only when the submitted work demonstrates a partly correct method. Numerical closeness alone is not evidence of understanding.
 - Reply with JSON only using this schema:
@@ -366,8 +367,8 @@ export default async function handler(req, res) {
   }
 
   const input = readBody(req);
-  if (input.course && input.course !== "jim-math") {res.status(400).json({error:"Unsupported course."});return;}
-  const body = courseContext({ ...input, course: "jim-math" });
+  if (input.course && input.course !== "uah-ma171") {res.status(400).json({error:"Unsupported course."});return;}
+  const body = courseContext({ ...input, course: "uah-ma171" });
   const action = body.action || "chat";
 
   if (action === "chat") {

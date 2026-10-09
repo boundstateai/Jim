@@ -1,4 +1,4 @@
-import { courseUserId } from "./course.js";
+import { courseUserId, courseStudentName } from "./course.js";
 // Saved chat transcripts in Railway Postgres, one row per message, so a
 // reload doesn't lose the conversation and the tutor can look back over
 // weeks of chats to say where Leo is actually struggling. Photos are not
@@ -142,5 +142,5 @@ export function formatChatDigest(messages, { maxChars = DIGEST_MAX_CHARS, person
 
 export async function chatDigest(course, { days = DIGEST_DAYS, persona } = {}) {
   const messages = await listChat(course, { days, limit: 2000 });
-  return { count: messages.length, text: formatChatDigest(messages, { persona, studentName: courseUserId(course) === "jim" ? "Jim" : "Leo" }) };
+  return { count: messages.length, text: formatChatDigest(messages, { persona, studentName: courseStudentName(course) }) };
 }
