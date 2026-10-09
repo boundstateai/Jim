@@ -1,4 +1,4 @@
-// Turns the client's chat transcript into Anthropic message params, carrying
+// Turns the client's chat transcript into OpenAI message params, carrying
 // photos of homework problems as image blocks so the tutor reads the page
 // itself — no separate OCR hop.
 //
@@ -60,10 +60,10 @@ function toImageBlock(image, index) {
   if (bytes > MAX_IMAGE_BYTES) {
     throw new ChatRequestError(`Photo ${index + 1} is too large (${(bytes / 1048576).toFixed(1)} MB). Keep each under 3 MB.`, 413);
   }
-  return { type: "image", source: { type: "base64", media_type: mediaType, data } };
+  return { type: "input_image", image_url: `data:${mediaType};base64,${data}`, detail: "auto" };
 }
 
-export function toAnthropicMessages(messages) {
+export function toOpenAIMessages(messages) {
   if (!Array.isArray(messages) || !messages.length) throw new ChatRequestError("messages required");
   const withImages = messages
     .map((message, index) => ({ message, index }))
@@ -83,7 +83,7 @@ export function toAnthropicMessages(messages) {
     }
     return {
       role,
-      content: [...images.map(toImageBlock), { type: "text", text: text.trim() || PHOTO_ONLY_TEXT }],
+      content: [...images.map(toImageBlock), { type: "input_text", text: text.trim() || PHOTO_ONLY_TEXT }],
     };
   });
 }

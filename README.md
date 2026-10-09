@@ -27,7 +27,7 @@ npm start
 
 Open `http://localhost:8080`. The root page is Jim's app. For frontend development, run `npm run api:dev` in one terminal and `npm run dev` in another; Vite proxies API calls to port 3001.
 
-The starting check, curriculum and visual explorers run without provider keys. Live tutor/verification needs `ANTHROPIC_API_KEY`; saved progress and chats need `DATABASE_URL`. Voice uses the providers configured in `api/_lib/voice.js`. Missing services produce errors rather than fabricated tutor answers or saved progress.
+The starting check, curriculum and visual explorers run without provider keys. Live tutor/verification needs `OPENAI_API_KEY`; saved progress and chats need `DATABASE_URL`. Voice uses the providers configured in `api/_lib/voice.js`. Missing services produce errors rather than fabricated tutor answers or saved progress.
 
 ## Host
 
@@ -61,3 +61,5 @@ Tests that require Postgres skip without `DATABASE_URL`. The new model/SQL bound
 Live frontend: https://jim-math-lab.vercel.app
 
 Custom domain: `jim.boundstate.ai`, attached to the Vercel project on September 13, 2026. A `jim` CNAME to `cname.vercel-dns.com` was added at Namecheap; DNS propagation and Vercel's HTTPS verification were not yet confirmed at the time of writing. See `docs/JIM_MATH_LAB.md` for deployment IDs, verification and remaining setup.
+
+AI hosting and validation: [OpenAI migration](docs/OPENAI_MIGRATION.md).
