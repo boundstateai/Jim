@@ -1,3 +1,4 @@
+import { sessionFetch } from "./sessionClient.js";
 import { useEffect, useRef, useState } from "react";
 import { apiHeaders } from "./apiAuth";
 import { duration, IDLE_MS, pauseReason } from "./studyActivity";
@@ -19,7 +20,7 @@ export function StudyRewards() {
     if (mounted.current && result.summary) setData(previous => !previous || result.summary.serverNow >= previous.summary.serverNow ? result : previous);
   }
   async function request(body, keepalive = false) {
-    const response = await fetch("/api/study", { method: body ? "POST" : "GET", headers: apiHeaders({ "Content-Type": "application/json" }), ...(body ? { body: JSON.stringify(body) } : {}), keepalive, signal: AbortSignal.timeout(12000) });
+    const response = await sessionFetch("/api/study", { method: body ? "POST" : "GET", headers: apiHeaders({ "Content-Type": "application/json" }), ...(body ? { body: JSON.stringify(body) } : {}), keepalive, signal: AbortSignal.timeout(12000) });
     const result = await response.json();
     receive(result);
     if (!response.ok) throw new Error(result.error || "Could not save study time.");

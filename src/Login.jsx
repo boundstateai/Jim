@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { apiHeaders } from "./apiAuth";
+import { readLoginStatus, loginWithSession, SESSION_EXPIRED_EVENT } from "./sessionClient.js";
 
 // Wraps the app in a sign-in gate. The server is the real gate; this just
 // gives the learner somewhere to sign in and keeps the UI from firing doomed requests.
@@ -12,39 +12,23 @@ export function LoginGate({ children }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/login", { headers: apiHeaders() })
-      .then(r => (r.ok ? r.json() : { authenticated: true, configured: false }))
-      .then(data => {
-        if (cancelled) return;
-        // If login was never configured the app stays open, as it was before.
-        setStatus(data.authenticated || !data.configured ? "in" : "out");
-      })
-      .catch(() => { if (!cancelled) setStatus("in"); });
-    return () => { cancelled = true; };
+    const expired = () => { setError("Your session ended. Please sign in again."); setStatus("out"); };
+    window.addEventListener(SESSION_EXPIRED_EVENT, expired);
+    readLoginStatus().then(data => {
+      if (!cancelled) setStatus(data.authenticated ? "in" : "out");
+    }).catch(error => {
+      if (!cancelled) { setError(error.message); setStatus("out"); }
+    });
+    return () => { cancelled = true; window.removeEventListener(SESSION_EXPIRED_EVENT, expired); };
   }, []);
 
   async function submit(event) {
-    event.preventDefault();
-    setBusy(true);
-    setError("");
+    event.preventDefault(); setBusy(true); setError("");
     try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: apiHeaders({ "Content-Type": "application/json" }),
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await response.json().catch(() => ({}));
-      if (response.ok && data.authenticated) {
-        setPassword("");
-        setStatus("in");
-      } else {
-        setError(data.error || "Sign in failed. Please try again.");
-      }
-    } catch {
-      setError("Could not reach the server. Check your connection.");
-    } finally {
-      setBusy(false);
-    }
+      await loginWithSession(username, password);
+      setPassword(""); setStatus("in");
+    } catch (error) { setError(error.message || "Could not reach the server."); }
+    finally { setBusy(false); }
   }
 
   if (status === "checking") {

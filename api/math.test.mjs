@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { courseUserId, courseContext, calculusSystemPrompt } from "./_lib/course.js";
 import { formatChatDigest } from "./_lib/chatLog.js";
 import { struggleAddendum } from "./_lib/chatMessages.js";
-import { client } from "./_lib/anthropic.js";
+import { client } from "./_lib/openai.js";
 import { pool, getProgress, listProgressHistory, getProgressHistoryEntry, putProgress, restoreProgress } from "./_lib/db.js";
 import { listChat, appendChat } from "./_lib/chatLog.js";
 import { issueSummary, recordIssues } from "./_lib/issues.js";
@@ -31,11 +31,11 @@ test("Student's report labels his own transcript and preserves Leo's default", (
 });
 
 test("math generation and grading reach the handler with calculus context and method-based rubric", async () => {
-  const original = client.messages.create;
+  const original = client.responses.create;
   const prompts = [];
-  client.messages.create = async payload => {
-    prompts.push(payload.messages[0].content);
-    return {content:[{type:"text",text:JSON.stringify({problem:"Differentiate x² at x=1",solution:"The derivative is 2x; at x=1 it is 2",correctAnswer:"2",grade:"PARTIAL",explanation:"Show the derivative before evaluating."})}]};
+  client.responses.create = async payload => {
+    prompts.push(payload.input[0].content);
+    return {status:"completed",output:[{type:"message",content:[{type:"output_text",text:JSON.stringify({problem:"Differentiate x² at x=1",solution:"The derivative is 2x; at x=1 it is 2",correctAnswer:"2",grade:"PARTIAL",explanation:"Show the derivative before evaluating."})}]}]};
   };
   const headers = {authorization:`Bearer ${process.env.LEO_API_TOKEN || process.env.API_TOKEN || ""}`};
   const makeRes = () => ({statusCode:0,status(n){this.statusCode=n;return this;},json(body){this.body=body;}});
@@ -51,7 +51,7 @@ test("math generation and grading reach the handler with calculus context and me
     assert.equal(graded.body.grade,"PARTIAL");
     assert.match(prompts[1], /unsupported final answer is PARTIAL/);
     assert.match(prompts[1], /Require all roots and restrictions/);
-  } finally {client.messages.create=original;}
+  } finally {client.responses.create=original;}
 });
 
 test("every Student storage operation scopes SQL to Student, including restore and saved conversations", async () => {

@@ -1,3 +1,4 @@
+import { sessionFetch } from "./sessionClient.js";
 import { MathLab } from "./MathLab.jsx";
 import { useCallback, useEffect, useRef, useState } from "react";
 import katex from "katex";
@@ -198,7 +199,7 @@ async function getProgressSnapshot(course = "chem", { attempts = 3 } = {}) {
   let lastError = null;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     try {
-      const response = await fetch(`/api/progress?course=${encodeURIComponent(course)}`, { headers: apiHeaders() });
+      const response = await sessionFetch(`/api/progress?course=${encodeURIComponent(course)}`, { headers: apiHeaders() });
       const data = await readResponseBody(response);
       if (!response.ok) {
         throw new Error(data.error || "Could not load progress.");
@@ -213,7 +214,7 @@ async function getProgressSnapshot(course = "chem", { attempts = 3 } = {}) {
 }
 
 async function putProgressSnapshot(progress, course = "chem", { reset = false } = {}) {
-  const response = await fetch("/api/progress", {
+  const response = await sessionFetch("/api/progress", {
     method: "PUT",
     headers: apiHeaders(JSON_HEADERS),
     body: JSON.stringify({ ...toRemoteProgress(progress), course, reset: Boolean(reset) }),
@@ -229,14 +230,14 @@ async function putProgressSnapshot(progress, course = "chem", { reset = false } 
 }
 
 async function listProgressHistory(course = "chem") {
-  const response = await fetch(`/api/progress?course=${encodeURIComponent(course)}&history=list`, { headers: apiHeaders() });
+  const response = await sessionFetch(`/api/progress?course=${encodeURIComponent(course)}&history=list`, { headers: apiHeaders() });
   const data = await readResponseBody(response);
   if (!response.ok) throw new Error(data.error || "Could not load saved copies.");
   return Array.isArray(data.history) ? data.history : [];
 }
 
 async function restoreProgressSnapshot(course = "chem", id) {
-  const response = await fetch("/api/progress", {
+  const response = await sessionFetch("/api/progress", {
     method: "PUT",
     headers: apiHeaders(JSON_HEADERS),
     body: JSON.stringify({ course, restore: id }),
@@ -247,7 +248,7 @@ async function restoreProgressSnapshot(course = "chem", id) {
 }
 
 async function postChatAction(payload) {
-  const response = await fetch("/api/chat", {
+  const response = await sessionFetch("/api/chat", {
     method: "POST",
     headers: apiHeaders(JSON_HEADERS),
     body: JSON.stringify(payload),
@@ -260,7 +261,7 @@ async function postChatAction(payload) {
 }
 
 async function streamChat(payload, handlers) {
-  const response = await fetch("/api/chat", {
+  const response = await sessionFetch("/api/chat", {
     method: "POST",
     headers: apiHeaders({
       ...JSON_HEADERS,
@@ -340,7 +341,7 @@ async function streamChat(payload, handlers) {
 }
 
 async function postVoiceAction(payload, signal) {
-  const response = await fetch("/api/voice", {
+  const response = await sessionFetch("/api/voice", {
     signal: signal || AbortSignal.timeout(30_000),
     method: "POST",
     headers: apiHeaders(JSON_HEADERS),
@@ -476,7 +477,7 @@ function chatSessionIdFor(storageKey) {
 }
 
 async function fetchChatLog(course, sessionId) {
-  const response = await fetch(
+  const response = await sessionFetch(
     `/api/chats?course=${encodeURIComponent(course)}&session=${encodeURIComponent(sessionId)}&limit=80`,
     { headers: apiHeaders() },
   );
@@ -489,7 +490,7 @@ async function fetchChatLog(course, sessionId) {
 // The formula index rides along so the server can tag trouble spots against
 // the same card ids the study engine grades — one taxonomy, not two.
 function saveChatLog(course, sessionId, messages, { formulas = [], tutor = {} } = {}) {
-  return fetch("/api/chats", {
+  return sessionFetch("/api/chats", {
     method: "POST",
     headers: apiHeaders(JSON_HEADERS),
     body: JSON.stringify({
@@ -503,7 +504,7 @@ function saveChatLog(course, sessionId, messages, { formulas = [], tutor = {} } 
 }
 
 async function fetchTroubleSpots(course) {
-  const response = await fetch(`/api/chats?course=${encodeURIComponent(course)}&issues=1&days=90`, { headers: apiHeaders() });
+  const response = await sessionFetch(`/api/chats?course=${encodeURIComponent(course)}&issues=1&days=90`, { headers: apiHeaders() });
   const data = await readResponseBody(response);
   if (!response.ok) throw new Error(data.error || "Could not load trouble spots.");
   return Array.isArray(data.issues) ? data.issues : [];

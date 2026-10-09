@@ -1,3 +1,4 @@
+import { sessionFetch } from "./sessionClient.js";
 import { useEffect, useState } from 'react';
 import { createActivityOutbox } from './activityOutbox.js';
 import { activeSlice, dailyTotals, IDLE_MS, unionRanges } from './activity.js';
@@ -48,7 +49,7 @@ export default function useActivity(course, enabled, headers) {
         return parts;
       }).slice(0,500);
       try {
-        const response=await fetch(`/api/activity?course=${encodeURIComponent(course)}`,ranges.length ? {method:'POST',headers:headers({'Content-Type':'application/json'}),body:JSON.stringify({ranges}),keepalive} : {headers:headers(),keepalive});
+        const response=await sessionFetch(`/api/activity?course=${encodeURIComponent(course)}`,ranges.length ? {method:'POST',headers:headers({'Content-Type':'application/json'}),body:JSON.stringify({ranges}),keepalive} : {headers:headers(),keepalive});
         if(!response.ok) throw new Error('sync');
         const data=await response.json();
         if(!Array.isArray(data.ranges)) throw new Error('response');

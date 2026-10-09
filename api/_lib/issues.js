@@ -6,7 +6,7 @@ import { courseUserId } from "./course.js";
 // toward tagging nothing: a question is not an issue, an error is.
 
 import { pool } from "./db.js";
-import { runJsonPrompt, TAGGER_MODEL } from "./anthropic.js";
+import { runJsonPrompt, TAGGER_MODEL } from "./openai.js";
 
 export const ISSUE_KINDS = ["misconception", "algebra", "units", "setup", "misread", "recall"];
 export const MAX_ISSUES_PER_TURN = 3;

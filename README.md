@@ -32,7 +32,7 @@ npm start
 
 For development, use `npm run api:dev` and `npm run dev` in separate terminals. The development API command works in PowerShell; Vite proxies to port 3001.
 
-Lessons, the starting check and explorers work without service credentials. Live AI coaching/generation/grading requires `ANTHROPIC_API_KEY`. Saved progress, chats and activity synchronization require `DATABASE_URL`. Missing services display errors; they do not fabricate answers or successful saves. The starting check is stored only in this browser.
+Lessons, the starting check and explorers work without service credentials. Live AI coaching/generation/grading requires `OPENAI_API_KEY`. Saved progress, chats and activity synchronization require `DATABASE_URL`. Missing services display errors; they do not fabricate answers or successful saves. The starting check is stored only in this browser.
 
 The server does not automatically load .env files. Set variables in the shell/host, or with Node 20.6+ use:
 
@@ -40,7 +40,7 @@ The server does not automatically load .env files. Set variables in the shell/ho
 node --env-file=.env.local scripts/server.mjs
 ```
 
-See [.env.example](.env.example). Micah has a dedicated Railway project and database. With owner authorization, the existing Anthropic and OpenAI provider keys are reused; no Jim progress or database connection is shared.
+See [.env.example](.env.example). Micah has a dedicated Railway project and database. With owner authorization, the working existing OpenAI provider key is reused; no Jim progress or database connection is shared.
 
 ## Isolation and hosting
 
@@ -48,7 +48,7 @@ Production uses Vercel project `micah-calculus` for the frontend at `micah.bound
 
 This remains a single-learner app. Set `CALCULUS_USERNAME` (default `student`) and `CALCULUS_PASSWORD_HASH`; generate the scrypt hash using `node scripts/hash-password.mjs`. Unconfigured authentication leaves the API open for local development, as in the source app. Configure authentication before publishing. It uses the `calculus_session` cookie, separate from Jim's cookie. Session enforcement runs inside API handlers as well as the Node server.
 
-The shared-engine `LEO_API_TOKEN`/`VITE_LEO_API_TOKEN` names remain for compatibility. A browser-bundled token is not user authentication. OpenAI voice configuration is inherited. Production sign-in, signed session cookies, database read/save/read, and an Anthropic calculus response were verified through the Vercel-to-Railway route on 2026-10-09. Voice recording and transcription were not live-tested.
+The shared-engine `LEO_API_TOKEN`/`VITE_LEO_API_TOKEN` names remain for compatibility. A browser-bundled token is not user authentication. OpenAI voice configuration is inherited. Production sign-in, signed session cookies, database read/save/read, and an OpenAI Terra calculus response were verified through the Vercel-to-Railway route on 2026-10-09. Voice recording and transcription were not live-tested.
 
 ## Evidence and limits
 
@@ -58,3 +58,5 @@ The shared-engine `LEO_API_TOKEN`/`VITE_LEO_API_TOKEN` names remain for compatib
 npm test
 npm run build
 ```
+
+AI hosting and validation: [OpenAI migration](docs/OPENAI_MIGRATION.md).
